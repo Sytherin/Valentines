@@ -1,14 +1,20 @@
-const no_button = document.getElementById('no-button');
-const yes_button = document.getElementById('yes-button');
-const banner = document.getElementById('banner');
-const container = document.querySelector('.buttons');
+const no_button = document.getElementById("no-button");
+const yes_button = document.getElementById("yes-button");
+const banner = document.getElementById("banner");
+const container = document.querySelector(".buttons");
+const originalNoPosition = {
+  left: "50%",
+  top: "120px",
+  transform: "translateX(-50%)"
+};
 
-let no_index = 0;    // index for NO messages
-let clicks = 0;      // number of NO clicks
-let yesScale = 1;    // scale for YES button
-const maxYesScale = 4; // max scale so it doesn't fill the screen
 
-// Extended NO messages
+let no_index = 0;
+let clicks = 0;
+let yesScale = 1;
+const maxYesScale = 4;
+
+/* ---------- NO MESSAGES ---------- */
 const answers_no = [
   "No",
   "Sure jud?",
@@ -16,28 +22,25 @@ const answers_no = [
   "sure na sure na jud???",
   "huna hunaa sa ba",
   "basin napay second chances?",
-  "nganong cold ka?",
+  "laina nganong cold ka?",
   "basin pwede pa nato ma estoryaan?",
-  "di na nako balikon!",
-  "sakit na akong feelings!",
-  "nangaway naman imoha!",
+  "e yes na ba...",
+  "sakit na akong feelings...",
+  "pangaway naman imoha...",
   "ngano ingana ka nako?",
-  "Please give me a chance!",
-  "nag pakilouy nako, hunong na!",
-  "Ok, ako nalng e balik sa sauno.."
+  "Please give me a chance...",
+  "nag pakilouy nako, stop na",
+  "Ok, ako nalng e balik sa uno..."
 ];
 
-// YES button text
-const answers_yes = "Yes";
-
-// Banner GIFs for NO clicks
+/* ---------- NO GIFS ---------- */
 const no_gifs = [
-  "public/images/sad.gif",  // first NO click
-  "public/images/sad2.gif", // second NO click
-  "public/images/sad3.gif"  // etc
+  "public/images/sad.gif",
+  "public/images/sad2.gif",
+  "public/images/sad3.gif"
 ];
 
-/* ---------- MOVE NO BUTTON SAFELY ---------- */
+/* ---------- MOVE NO BUTTON (ANTI-OVERLAP) ---------- */
 function moveNoButton() {
   const containerRect = container.getBoundingClientRect();
   const yesRect = yes_button.getBoundingClientRect();
@@ -50,7 +53,7 @@ function moveNoButton() {
   };
 
   const padding = 30;
-  let x, y, overlap, attempts = 0;
+  let x, y, overlap, tries = 0;
 
   do {
     x = Math.random() * (container.clientWidth - no_button.offsetWidth);
@@ -70,60 +73,71 @@ function moveNoButton() {
       noBox.top > yesBox.bottom + padding
     );
 
-    attempts++;
-    if (attempts > 100) break;
-
+    tries++;
+    if (tries > 100) break;
   } while (overlap);
 
-  no_button.style.position = "absolute";
-  no_button.style.left = x + "px";
-  no_button.style.top = y + "px";
+  no_button.style.left = `${x}px`;
+  no_button.style.top = `${y}px`;
 }
 
-/* ---------- REFRESH GIF ---------- */
+/* ---------- FORCE GIF RELOAD ---------- */
 function refreshBanner() {
   const src = banner.src;
-  banner.src = '';
+  banner.src = "";
   banner.src = src;
 }
 
-/* ---------- NO BUTTON CLICK ---------- */
-no_button.addEventListener('click', () => {
+/* ---------- NO CLICK ---------- */
+no_button.addEventListener("click", () => {
   clicks++;
 
-  // Change banner GIF based on NO clicks
+  // change banner GIF
   if (clicks <= no_gifs.length) {
     banner.src = no_gifs[clicks - 1];
     refreshBanner();
   }
 
-  // Move NO button
+  // move NO
   moveNoButton();
 
-  // Grow YES button gradually using scale
-  yesScale += 0.25;
-  if (yesScale > maxYesScale) yesScale = maxYesScale;
+  // grow YES (scale only)
+  yesScale = Math.min(yesScale + 0.25, maxYesScale);
   yes_button.style.transform = `translateX(-50%) scale(${yesScale})`;
 
-  // Change NO button text
+  // change NO text
   if (no_index < answers_no.length - 1) {
     no_index++;
-    no_button.innerHTML = answers_no[no_index];
+    no_button.textContent = answers_no[no_index];
   } else {
-    // After last NO message, reset everything
     alert(answers_no[answers_no.length - 1]);
-    no_index = 0;
-    no_button.innerHTML = answers_no[0];
-    yes_button.innerHTML = answers_yes;
-    yesScale = 1;
-    yes_button.style.transform = `translateX(-50%) scale(${yesScale})`;
-    clicks = 0;
-    banner.src = "public/images/iloveyou.gif"; // reset banner
-    refreshBanner();
+    resetAll();
   }
 });
 
-/* ---------- YES BUTTON CLICK ---------- */
+/* ---------- RESET ---------- */
+function resetAll() {
+  no_index = 0;
+  clicks = 0;
+  yesScale = 1;
+
+  no_button.textContent = answers_no[0];
+
+  // ✅ RESET NO BUTTON POSITION
+  no_button.style.left = originalNoPosition.left;
+  no_button.style.top = originalNoPosition.top;
+  no_button.style.transform = originalNoPosition.transform;
+
+  // reset YES
+  yes_button.style.transform = "translateX(-50%) scale(1)";
+
+  // reset banner
+  banner.src = "public/images/iloveyou.gif";
+  refreshBanner();
+}
+
+
+/* ---------- YES CLICK ---------- */
 yes_button.addEventListener("click", () => {
-  window.location.href = "yes.html"; // Redirect to celebration page
+  window.location.href = "yes.html";
 });

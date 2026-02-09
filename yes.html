@@ -3,106 +3,23 @@
 <head>
 <meta charset="UTF-8">
 <title>Yippee!</title>
-<style>
-  body {
-    margin: 0;
-    padding: 0;
-    height: 100vh;
-    background: #ffe4e1; /* warm palette */
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    font-family: "Comic Sans MS", cursive, sans-serif;
-    overflow: hidden;
-  }
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-  /* Image holder */
-  .image-holder {
-    width: 300px;
-    height: 200px;
-    margin-bottom: 30px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    overflow: hidden;
-    border-radius: 20px;
-    background: #fff0f5;
-    box-shadow: 0 0 10px rgba(0,0,0,0.2);
-  }
-
-  .image-holder img {
-    max-width: 100%;
-    max-height: 100%;
-    object-fit: contain;
-  }
-
-  h1 {
-    font-size: 3rem;
-    color: #ff3d68;
-    text-align: center;
-    margin-bottom: 40px;
-  }
-
-  canvas {
-    position: absolute;
-    top: 0;
-    left: 0;
-  }
-</style>
+<!-- ✅ FIXED CSS PATH -->
+<link rel="stylesheet" href="public/css/style.css">
 </head>
-<body>
 
-<!-- Image Holder -->
-<div class="image-holder">
-  <img src="public/images/flowerme.jpg" alt="Cute Sticker">
-</div>
+<body class="yes-page">
 
-<h1>Yepppie, Thank you love🥹🫶</h1>
+  <div class="image-holder">
+    <img src="public/images/flowerme.jpg" alt="cute">
+  </div>
 
-<canvas id="confetti"></canvas>
+  <h1>Yepppie, Thank you love 🥹🫶</h1>
 
-<script>
-// Simple confetti effect
-const canvas = document.getElementById("confetti");
-const ctx = canvas.getContext("2d");
-canvas.width = window.innerWidth;
-canvas.height = window.innerHeight;
+  <canvas id="confetti"></canvas>
 
-class Confetti {
-  constructor() {
-    this.x = Math.random() * canvas.width;
-    this.y = Math.random() * canvas.height - canvas.height;
-    this.r = Math.random() * 6 + 4;
-    this.d = Math.random() * 20 + 10;
-    this.color = `hsl(${Math.random()*360}, 100%, 50%)`;
-    this.tilt = Math.random() * 10 - 10;
-  }
-  draw() {
-    ctx.beginPath();
-    ctx.moveTo(this.x + this.tilt + this.r / 2, this.y);
-    ctx.lineTo(this.x + this.tilt, this.y + this.r);
-    ctx.strokeStyle = this.color;
-    ctx.lineWidth = this.r / 2;
-    ctx.stroke();
-  }
-}
-
-let confettiArr = [];
-for (let i = 0; i < 150; i++) confettiArr.push(new Confetti());
-
-function draw() {
-  ctx.clearRect(0, 0, canvas.width, canvas.height);
-  confettiArr.forEach((c) => {
-    c.draw();
-    c.y += c.d / 2;
-    c.x += Math.sin(c.y / 10);
-    if (c.y > canvas.height) c.y = -10;
-  });
-  requestAnimationFrame(draw);
-}
-
-draw();
-</script>
+  <!-- ✅ FIXED JS PATH -->
+  <script src="public/js/yes.js"></script>
 </body>
 </html>
